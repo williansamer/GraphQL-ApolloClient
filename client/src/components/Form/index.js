@@ -14,9 +14,9 @@ export default function Form() {
 
     contatos.criarContato({
       variables: inputs, //variables é o objeto que vai ser enviado para o servidor(no caso será enviado nome, email e telefone do estaco inputs)
-      refetchQueries: [{ //>>>2ª<<< FORMA DE ATUALIZAR A QUERY DEPOIS DE CRIAR UM CONTATO
+      refetchQueries: [{
         query: GET_CONTATOS
-      }]// refetchQueries é um array de queries que serão executadas novamente após a criação do contato 
+      }]
     })
     setInputs(initialValue)
   }

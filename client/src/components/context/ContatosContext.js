@@ -7,16 +7,15 @@ const MyContext = createContext();
 
 export default function ContatosContextProvider({children}) {
 
-  const {data, loading, refetch} = useQuery(GET_CONTATOS); //USANDO O 'refetch' >>>1ª<<< FORMA DE ATUALIZAR A TELA COM O QUANDO O CONTATO É CRIADO
-  const [criarContato] = useMutation(ADD_CONTATO);
+  const {data, loading} = useQuery(GET_CONTATOS);
+  const [criarContato] = useMutation(ADD_CONTATO); //criarContato é uma função
 
   return (
     <MyContext.Provider value={
       {contatos: 
         {itens: data ? data.contatos : [], 
         loading,
-        criarContato,
-        refetch //>>>1ª<<< FORMA DE ATUALIZAR A TELA COM O QUANDO O CONTATO É CRIADO
+        criarContato
       }}
     }>
       {children}

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useContatosContext} from '../context/ContatosContext';
+import { GET_CONTATOS} from '../graphql'
 
 const initialValue = {nome: "", email: "", telefone: ""};
 
@@ -13,8 +14,10 @@ export default function Form() {
 
     contatos.criarContato({
       variables: inputs, //variables é o objeto que vai ser enviado para o servidor(no caso será enviado nome, email e telefone do estaco inputs)
+      refetchQueries: [{ //>>>2ª<<< FORMA DE ATUALIZAR A QUERY DEPOIS DE CRIAR UM CONTATO
+        query: GET_CONTATOS
+      }]// refetchQueries é um array de queries que serão executadas novamente após a criação do contato 
     })
-    //contatos.refetch(); //>>>1ª<<< FORMA DE ATUALIZAR A TELA COM O QUANDO O CONTATO É CRIADO
     setInputs(initialValue)
   }
   function handleChange(input) {

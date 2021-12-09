@@ -1,16 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function Item({ item }) {
-  useEffect(() => {
-    console.log(item);
-  }, []);
 
   return (
     <div className="container-item">
       <div className="header-item">
         <h4>{item.nome}</h4>
         <button type="button" className="close">
-          <a className="link">
+          <a href="button" className="link">
             <span>&times;</span>
           </a>
         </button>

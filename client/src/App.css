@@ -108,6 +108,7 @@ button:hover{
   background-color: transparent;
   color: #fff;
   border: none;
+  cursor: pointer;
 }
 .main-item{
   margin-top: -10px;

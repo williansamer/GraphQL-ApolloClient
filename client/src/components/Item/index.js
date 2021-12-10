@@ -1,15 +1,24 @@
 import React from "react";
+import { useContatosContext } from "../context/ContatosContext";
+import { GET_CONTATOS } from "../graphql";
+//import { GET_CONTATOS } from "../graphql";
 
 export default function Item({ item }) {
+  const {contatos} = useContatosContext();
 
   return (
     <div className="container-item">
       <div className="header-item">
-        <h4>{item.nome}</h4>
-        <button type="button" className="close">
-          <a href="button" className="link">
+        <a href="name" className="link">
+          <h4>{item.nome}</h4>
+        </a>
+        <button type="button" className="close" 
+        onClick={()=>
+          contatos.deletarContato({
+            variables: {id: item.id},
+            refetchQueries: [{query: GET_CONTATOS}] // refetchQueries é um array que retorna algo após ocorrer a mutation. Neste caso está retornando um obj contendo a query GET_CONTATOS que será executada após a adição da variable.
+          })}>  {/* OBS: não tem como fazer atualização dos dados via 'cache'(3ª opção). A menos que trate esta situação no BACKEND */}
             <span>&times;</span>
-          </a>
         </button>
       </div>
       <div className="main-item">

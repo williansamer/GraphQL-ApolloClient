@@ -24,7 +24,6 @@ export default function Form() {
     setInputs({...inputs, [input.target.name]: input.target.value})
   }
 
-
   return (
       <form onSubmit={handleSubmit} className="container-form">
         <label className="label-form"> 

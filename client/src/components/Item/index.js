@@ -1,15 +1,21 @@
+import { formatError } from "graphql";
 import React from "react";
 import { useContatosContext } from "../context/ContatosContext";
 import { GET_CONTATOS } from "../graphql";
 //import { GET_CONTATOS } from "../graphql";
 
 export default function Item({ item }) {
-  const {contatos} = useContatosContext();
+  const {contatos, form} = useContatosContext();
+
 
   return (
     <div className="container-item">
       <div className="header-item">
-        <a href="name" className="link">
+        <a href="name" className="link" onClick={(e)=>{
+          e.preventDefault();
+          form.handleUpdate(item);
+        }
+        }>
           <h4>{item.nome}</h4>
         </a>
         <button type="button" className="close" 

@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 
-import { GET_CONTATOS, ADD_CONTATO, REMOVE_CONTATO } from "../graphql";
+import { GET_CONTATOS, ADD_CONTATO, REMOVE_CONTATO, UPDATE_CONTATO } from "../graphql";
 
 const MyContext = createContext();
 
@@ -29,8 +29,49 @@ const createCache = {
 
 export default function ContatosContextProvider({ children }) {
   const { data, loading } = useQuery(GET_CONTATOS);
-  const [ criarContato ] = useMutation(ADD_CONTATO, createCache);
-  const [ deletarContato ] = useMutation(REMOVE_CONTATO);
+  const [criarContato] = useMutation(ADD_CONTATO, createCache);
+  const [deletarContato] = useMutation(REMOVE_CONTATO);
+  const [atualizarContato] = useMutation(UPDATE_CONTATO); 
+  //OBS IMPORTANTE: Ñ precisa fazer tratativa em cache ou refetch em 'atualizarContato', em 'criarContato' e 'deletarContato' já faz isso..
+  //..e ao atualizar, ele pega estes dados do cache e atualiza, não havendo portanto necessidade de refetch.
+
+  const [refId, refNome, refEmail, refTelefone] = useMyRefs(4);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if(refId.current.value === ""){
+      criarContato({
+        variables: {
+          id: refId.current.value, //O refId é inteiro, mas ao ser armazenado no cache, ele vira string.
+          nome: refNome.current.value,
+          email: refEmail.current.value,
+          telefone: refTelefone.current.value,
+        },
+    });
+    } else{
+      atualizarContato({
+        variables: {
+          id: parseInt(refId.current.value), //O refid.current.value retorna um string, então precisamos converter para inteiro, já que no backend o id é um inteiro.
+          nome: refNome.current.value,
+          email: refEmail.current.value,
+          telefone: refTelefone.current.value,
+        }
+      })
+    }
+
+    refId.current.value = '';
+    refNome.current.value = '';
+    refEmail.current.value = '';
+    refTelefone.current.value = '';
+  }
+
+  function handleUpdate(item){
+    refId.current.value = item.id;
+    refNome.current.value = item.nome;
+    refEmail.current.value = item.email;
+    refTelefone.current.value = item.telefone;
+  }
 
   return (
     <MyContext.Provider
@@ -38,8 +79,15 @@ export default function ContatosContextProvider({ children }) {
         contatos: {
           itens: data ? data.contatos : [],
           loading,
-          criarContato,
           deletarContato,
+        },
+        form: { 
+          handleSubmit, 
+          handleUpdate,
+          refId,
+          refNome, 
+          refEmail, 
+          refTelefone 
         },
       }}
     >
@@ -51,4 +99,9 @@ export default function ContatosContextProvider({ children }) {
 export function useContatosContext() {
   const context = useContext(MyContext); // pega o contexto do provider e retorna o valor dele
   return context;
+}
+
+function useMyRefs(size) {
+  return Array(size).fill(0).map(() => React.createRef());
+  //Criando um array de refs, com o tamanho de length passado por parâmetro e preenchendo com 0 para cada posição.
 }
